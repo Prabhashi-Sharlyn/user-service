@@ -1,7 +1,6 @@
 package com.betterwellness.userservice.controller;
 
 import com.betterwellness.userservice.model.User;
-import com.betterwellness.userservice.repository.UserRepository;
 import com.betterwellness.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
