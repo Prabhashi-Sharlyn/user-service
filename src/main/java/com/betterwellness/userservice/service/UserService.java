@@ -5,6 +5,8 @@ import com.betterwellness.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -21,5 +23,9 @@ public class UserService {
         } else {
             throw new RuntimeException("User with UUID " + user.getUuid() + " already exists.");
         }
+    }
+
+    public List<User> getAllCounsellors() {
+        return userRepository.findByRole("counsellor");
     }
 }

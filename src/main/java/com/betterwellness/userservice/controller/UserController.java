@@ -16,9 +16,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @PostMapping("/save")
     public String saveUser(@RequestBody User user) {
         if (userService.userExists(user.getUuid())) {
@@ -30,7 +27,7 @@ public class UserController {
 
     @GetMapping("/counsellors")
     public ResponseEntity<List<User>> getCounsellors() {
-        List<User> counsellors = userRepository.findByRole("counsellor");
+        List<User> counsellors = userService.getAllCounsellors();
         return ResponseEntity.ok(counsellors);
     }
 }
