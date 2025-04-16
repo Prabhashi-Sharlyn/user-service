@@ -35,7 +35,6 @@ phases:
       - echo "Final k8s.yaml contents:"
       - cat k8s.yaml
       - echo Applying Kubernetes manifest...
-      - aws eks update-kubeconfig --region $REGION --name $CLUSTER_NAME
       - kubectl apply -f k8s.yaml
 
 artifacts:
