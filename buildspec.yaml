@@ -21,6 +21,8 @@ phases:
       - sed -i "s|setAllowedOrigins(.*)|setAllowedOrigins(List.of(\"$FRONTEND_URL\"))|g" src/main/java/com/betterwellness/userservice/config/CorsConfig.java
   build:
     commands:
+      - echo Building JAR...
+      - mvn clean package -DskipTests
       - echo Building Docker image...
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
