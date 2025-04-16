@@ -23,10 +23,14 @@ phases:
     commands:
       - echo Building JAR...
       - mvn clean package -DskipTests
+      - echo obtain aws auth token
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 147997140755.dkr.ecr.ap-south-1.amazonaws.com
       - echo Building Docker image...
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
     commands:
+      - echo creating tag
+      - docker tag user-service:latest 147997140755.dkr.ecr.ap-south-1.amazonaws.com/user-service:latest
       - echo Pushing image to ECR...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Updating kubeconfig...
