@@ -12,11 +12,12 @@ phases:
     runtime-versions:
       java: corretto17
     commands:
-      - echo Installing kubectl...
-      - curl -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.28/2023-10-26/bin/linux/amd64/kubectl"
+      - echo Installing kubectl the official way...
+      - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.28/2023-10-26/bin/linux/amd64/kubectl
       - chmod +x kubectl
-      - mv kubectl /usr/local/bin/
-      - kubectl version --client
+      - mv kubectl /usr/local/bin/kubectl
+      - echo Verifying kubectl version...
+      - /usr/local/bin/kubectl version --client
 
   pre_build:
     commands:
