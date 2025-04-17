@@ -15,8 +15,7 @@ phases:
     commands:
       - echo Logging into ECR...
       - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-      - REPOSITORY= $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
-      - REPOSITORY_URI=$REPOSITORY/$ECR_REPO_NAME
+      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPO_NAME
       - echo Using frontend URL passed via environment variable.. $FRONTEND_URL
       - echo Updating CORS config...
       - sed -i "s|setAllowedOrigins(.*)|setAllowedOrigins(List.of(\"$FRONTEND_URL\"))|g" src/main/java/com/betterwellness/userservice/config/CorsConfig.java
@@ -25,7 +24,7 @@ phases:
       - echo Building JAR...
       - mvn clean package -DskipTests
       - echo obtain aws auth token
-      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
       - echo Building Docker image...
       - docker build -t $REPOSITORY_URI:$TAG .
   post_build:
