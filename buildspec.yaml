@@ -13,7 +13,7 @@ phases:
       java: corretto17
     commands:
       - echo Installing kubectl...
-      - curl -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.6/2023-10-26/bin/linux/amd64/kubectl"
+      - curl -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.28/2023-10-26/bin/linux/amd64/kubectl"
       - chmod +x kubectl
       - ./kubectl version --client
 
