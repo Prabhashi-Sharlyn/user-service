@@ -13,7 +13,7 @@ phases:
       java: corretto17
     commands:
       - echo Installing jq...
-      - yum install -y jq
+      - apt-get update && apt-get install -y jq
 
   pre_build:
     commands:
