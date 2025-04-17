@@ -5,6 +5,7 @@ env:
     ECR_REPO_NAME: user-service
     REGION: ap-south-1
     CLUSTER_NAME: betterwellness-cluster
+    TAG: latest
 
 phases:
   install:
@@ -14,8 +15,8 @@ phases:
     commands:
       - echo Logging into ECR...
       - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPO_NAME
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - REPOSITORY= $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
+      - REPOSITORY_URI=$REPOSITORY/$ECR_REPO_NAME
       - echo Using frontend URL passed via environment variable.. $FRONTEND_URL
       - echo Updating CORS config...
       - sed -i "s|setAllowedOrigins(.*)|setAllowedOrigins(List.of(\"$FRONTEND_URL\"))|g" src/main/java/com/betterwellness/userservice/config/CorsConfig.java
@@ -24,19 +25,19 @@ phases:
       - echo Building JAR...
       - mvn clean package -DskipTests
       - echo obtain aws auth token
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 147997140755.dkr.ecr.ap-south-1.amazonaws.com
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
       - echo Building Docker image...
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker build -t $REPOSITORY_URI:$TAG .
   post_build:
     commands:
       - echo creating tag
-      - docker tag user-service:latest 147997140755.dkr.ecr.ap-south-1.amazonaws.com/user-service:latest
+      - docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$TAG
       - echo Pushing image to ECR...
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:$TAG
       - echo Updating kubeconfig...
       - aws eks update-kubeconfig --region $REGION --name $CLUSTER_NAME
       - echo Replacing image URI in k8s.yaml...
-      - sed -i "s|<IMAGE_URI>|$REPOSITORY_URI:$IMAGE_TAG|g" k8s.yaml
+      - sed -i "s|<IMAGE_URI>|$REPOSITORY_URI:$TAG|g" k8s.yaml
       - echo "Final k8s.yaml contents:"
       - cat k8s.yaml
       - echo Applying Kubernetes manifest...
