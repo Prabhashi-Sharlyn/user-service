@@ -89,7 +89,7 @@ phases:
       - cat k8s.yaml
 
       - echo Applying Kubernetes manifest...
-      - kubectl apply -f k8s.yaml
+      - kubectl apply -f k8s.yaml --validate=false
 
 artifacts:
   files: '**/*'
